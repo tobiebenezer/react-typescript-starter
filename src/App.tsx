@@ -1,25 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { routes } from './config/routes';
+import { PrivateRoute } from './containers/PrivateRoute';
+import { PublicRoute } from './containers/PublicRoute';
 
-function App() {
+const App = (): JSX.Element => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Router >
+      <Routes>
+        {Object.keys(routes).map(key => {
+          const value = routes[key];
+          const {isPrivate, isStatic} = value ;
+            if(isStatic){
+              return <Route {...value} key={key} />
+            }
+
+            //with authentication
+            const SelectRoute = isPrivate ? PrivateRoute : PublicRoute;
+            // return <SelectRoute {...value} key={key} />
+            //withour authentication
+          return <Route {...value} key={key} />
+
+        })}
+      </Routes>
+    </Router>
+    
   );
 }
 
